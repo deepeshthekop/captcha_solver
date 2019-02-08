@@ -8,24 +8,18 @@ CHARACTER_DIM = (30, 32)
 FPATH = os.path.dirname(os.path.realpath(__file__))
 
 def captcha_cracker(img):
-
     captcha = ""
-
     img_width = CAPTCHA_DIM[0]
     img_height = CAPTCHA_DIM[1]
-
     char_width = CHARACTER_DIM[0]
     char_height = CHARACTER_DIM[1]
 
     char_crop_threshold = {'upper': 12, 'lower': 44}
-
     img_matrix = img.convert('L').load()
-
     bitmaps_fpath = os.path.join(FPATH, "bitmaps.json")
-
     bitmaps = json.load(open(bitmaps_fpath))
 
-    # remove single pixel width noise + thresholding
+    # remove single pixel width noise and thresholding
     for y in range(1, img_height - 1):
         for x in range(1, img_width - 1):
             if img_matrix[x, y-1] == 255 and img_matrix[x, y] == 0 and img_matrix[x, y+1] == 255:
@@ -69,6 +63,19 @@ def captcha_cracker(img):
 
 
 if __name__ == '__main__':
-    inputImage = input("Enter file name with extension: ")
+    inputImage = input("Enter the captcha image name with extension(.png): ")
     img = Image.open(os.path.join(FPATH, "test/{}".format(inputImage)))
+    print("The characters are: ")
     print(captcha_cracker(img))
+    print("")
+    x = input("Do you want to enter another captcha(y/n): ")
+    while x=='y':
+        inputImage = input("Enter the captcha image name with extension(.png): ")
+        img = Image.open(os.path.join(FPATH, "test/{}".format(inputImage)))
+        print("The characters are: ")
+        print(captcha_cracker(img))
+        print("")
+        x = input("Do you want to enter another captcha(y/n): ")
+    if x=='n':
+        input("Press Enter to exit ")
+        
